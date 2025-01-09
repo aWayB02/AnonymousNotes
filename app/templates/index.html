@@ -7,31 +7,20 @@
 </head>
 <body>
     <h1>Создание анонимной записки</h1>
-
     <form action="{{ url_for('user.submit') }}" method="post">
-        <!-- Поле для текста записки -->
         <label for="note">Текст записки:</label><br>
         <textarea id="note" name="note" rows="10" cols="50" placeholder="Введите вашу записку..." required>{{ note }}</textarea><br><br>
-
-        <!-- Поле для таймера удаления -->
         <label for="timer">Удалить через (в минутах):</label><br>
         <input type="number" id="timer" name="timer" min="1" value="{{ timer }}"  placeholder="Например: 10"><br><br>
-
-        <!-- Поле для пароля -->
         <label for="password">Пароль для доступа к записке:</label><br>
         <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Введите пароль (необязательно)"><br><br>
-
-        <!-- Кнопка отправки -->
         <button type="submit">Отправить</button>
     </form>
-    
     {% if unique_id %}
         <hr>
         <p>Приватная ссылка на страницу viewing/{{ unique_id }}.
             Поделитесь с собеседником
         </p>
-
     {% endif %}
-
 </body>
 </html>
