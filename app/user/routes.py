@@ -2,16 +2,22 @@ from . import user
 from db import db_connect
 
 from flask import request, render_template, redirect, url_for
-import uuid
+import uuid, os
 from datetime import datetime, timedelta
 import psycopg2.extras
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
 
 psycopg2.extras.register_uuid()
+load_dotenv()
+
+
 
 @user.route("/")
 def index():
     return render_template("index.html")
+
+
 
 @user.route("/submit", methods=["POST", "GET"])
 def submit():
@@ -23,8 +29,10 @@ def submit():
         unique_id = uuid.uuid1()
         note = request.form.get("note")
         timer = request.form.get("timer")
-        password = request.form.get("password")
-        password_hash = generate_password_hash(password)
+        password = request.form.get("password", None)
+        if password:
+            password_hash = generate_password_hash(password)
+            password = password_hash
         note_encrypted = None
         if timer:
             timer = int(timer)
@@ -32,14 +40,16 @@ def submit():
 
         cur.execute("""
         INSERT INTO notes(unique_id, note, timer, password)
-        VALUES(%s, %s, %s, %s)""", (unique_id, note, date, password_hash,))
+        VALUES(%s, %s, %s, %s)""", (unique_id, note, date, password,))
 
         conn.commit()
         conn.close()
 
-        return redirect(url_for('user.viewing', id=unique_id))
+        link = os.environ.get("URL") + 'viewing/' + str(unique_id)
+        return f"ссылка на записку готова: {link}"
     
     return render_template("index.html")
+
 
 
 @user.route("/viewing/<uuid:id>", methods=["GET", "POST"])
@@ -52,7 +62,7 @@ def viewing(id):
                 """, (id, ))
 
     note = cur.fetchone()
-    if note[4]:
+    if note and note[4]:
         if request.method == "POST":
 
             password = request.form.get("password")
@@ -68,8 +78,8 @@ def viewing(id):
                 <button type="submit">Отправить</button>
             </form>
                 """
-    
-    return render_template("result.html", note=note[2], timer=note[3], id=note[1])
+    return "Запись удалена"
+    # return render_template("result.html", note=note[2], timer=note[3], id=note[1])
 
 
 
@@ -86,5 +96,5 @@ def delete(id):
         cur.execute("DELETE FROM notes WHERE unique_id = %s", (id, ))
         conn.commit()
         conn.close()
-        return "Note deleted", 200
+        return redirect(url_for('index'))
     return "Note error"
