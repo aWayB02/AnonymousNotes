@@ -34,9 +34,8 @@ def submit():
             password_hash = generate_password_hash(password)
             password = password_hash
         note_encrypted = None
-        if timer:
-            timer = int(timer)
-            date = datetime.now() + timedelta(minutes=timer)
+        timer = int(timer)
+        date = datetime.now() + timedelta(minutes=timer)
 
         cur.execute("""
         INSERT INTO notes(unique_id, note, timer, password)
@@ -78,8 +77,9 @@ def viewing(id):
                 <button type="submit">Отправить</button>
             </form>
                 """
-    return "Запись удалена"
-    # return render_template("result.html", note=note[2], timer=note[3], id=note[1])
+    if not note:
+        return "Запись удалена"
+    return render_template("result.html", note=note[2], timer=note[3], id=note[1])
 
 
 
