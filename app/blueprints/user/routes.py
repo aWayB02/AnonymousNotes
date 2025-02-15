@@ -23,15 +23,10 @@ def createnote():
     """
     form = CreateNote()
     if form.validate_on_submit():
-        encryption_key = get_encryption_key()
-        print(encryption_key)
-        text = encryption_key.encrypt(form.text.data.encode())
-        date = form.date.data
-        url = encryption_key.encrypt(str(uuid4()).encode())
-        password = encryption_key.encrypt(str(uuid4()).encode())
-        new_note = SecretNote(url=url, password=password, text=text, date_remove=date)
-        new_note.create_note() 
-        return f"Ваш ключ шифрования - {encryption_key}, храните его в безопасности. "
+        key = get_encryption_key()
+        text = key.encrypt(form.text.data.encode())
+        
+        return text.decode()
 
 
 @user.route("/delete")

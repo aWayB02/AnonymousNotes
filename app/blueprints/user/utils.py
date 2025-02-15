@@ -2,15 +2,12 @@ from cryptography.fernet import Fernet
 from flask import session
 
 
-def generate_encryption_key() -> Fernet:
-    f =  Fernet.generate_key()
-    key = Fernet(f)
-    print(f"f - {f}\nkey - {key}")
-    return "hello"
-    
-def get_encryption_key() -> Fernet:
+def generate_encryption_key() -> bytes:
+    return Fernet.generate_key()
+
+
+def get_encryption_key():
     if not session.get("encryption_key", False):
-        session["encryption_key"] = generate_encryption_key()
-        return Fernet(session["encryption_key"].encode('utf-8'))
+        session['encryption_key'] = generate_encryption_key().decode()
     
-    return Fernet(session["encryption_key"].encode('utf-8'))
+    return Fernet(session["encryption_key"].encode())

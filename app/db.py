@@ -8,12 +8,16 @@ import os
 load_dotenv()
 
 
-def create_pool(dbname: str, user: str, password: str) -> ConnectionPool:
+def create_pool(
+        dbname: str, 
+        user: str, password: str) -> ConnectionPool:
     """
     Функция для создания пула соединений
     """
     try:
-        return ConnectionPool(conninfo=f"dbname={dbname} user={user} password={password} port=5432 host=localhost", min_size=4, max_size=10)
+        return ConnectionPool(conninfo=f"""dbname={dbname} user={user} 
+                            password={password} port=5432 
+                            host=localhost""", min_size=4, max_size=10)
     except Error as e:
         return e
     
