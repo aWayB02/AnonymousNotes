@@ -1,7 +1,6 @@
 from psycopg_pool import ConnectionPool
 from psycopg.errors import Error
 from datetime import datetime
-from uuid import uuid4
 from dotenv import load_dotenv
 import os
 
@@ -28,9 +27,9 @@ class SecretNote:
     """
     def __init__(
                 self, 
-                url: uuid4, 
-                password: bytes, 
-                text: bytes, 
+                url: str, 
+                password: str, 
+                text: str, 
                 date_remove: datetime
                 ):
         
@@ -39,18 +38,22 @@ class SecretNote:
         self.text = text
         self.date_remove = date_remove
     
+
     def create_note(self):
         """
-        Функция для создания записки
+        Метод для создания записки
         """
         try:
             with pool.connection() as conn:
                 conn.execute("""
                 INSERT INTO notes(url, password, text, date_remove)
-                VALUES(%s, %s, %s, %s)
-                            """, (self.url, self.password, self.text, self.date_remove))
+                VALUES(%s, %s, %s, %s);
+                """, (self.url, self.password, self.text, self.date_remove))
+                
         except Error as e:
-            return e
+            raise e
 
 
-pool: ConnectionPool = create_pool(dbname=os.environ.get("DBNAME"), user=os.environ.get("USER"), password=os.environ.get("PASSWORD"))
+pool: ConnectionPool = create_pool(dbname=os.environ.get("DBNAME"), 
+                                   user=os.environ.get("USER"), 
+                                   password=os.environ.get("PASSWORD"))

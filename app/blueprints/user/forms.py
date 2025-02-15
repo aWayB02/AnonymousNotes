@@ -4,5 +4,5 @@ from wtforms.validators import DataRequired
 
 class CreateNote(FlaskForm):
     text = TextAreaField("text", validators=[DataRequired()])
-    date = TimeField("time", validators=[DataRequired()])
+    date_remove = TimeField("time", validators=[DataRequired()])
     submit = SubmitField("Отправить")

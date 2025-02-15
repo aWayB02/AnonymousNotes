@@ -4,7 +4,6 @@ from app.blueprints.user.forms import CreateNote
 from app.db import SecretNote
 from uuid import uuid4
 from app.blueprints.user.utils import get_encryption_key
-from cryptography.fernet import Fernet
 
 
 @user.route("/")
@@ -24,9 +23,19 @@ def createnote():
     form = CreateNote()
     if form.validate_on_submit():
         key = get_encryption_key()
-        text = key.encrypt(form.text.data.encode())
+        url = uuid4()
+        password = uuid4()
+        text = form.text.data
+        date_remove = form.date_remove.data
+        new_note = SecretNote(
+            url=(key.encrypt(str(url).encode()).decode()),
+            password=(key.encrypt(str(password).encode()).decode()),
+            text=(key.encrypt(text.encode()).decode()),
+            date_remove=date_remove)
         
-        return text.decode()
+        new_note.create_note()
+
+        return render_template('user/result.html', key=session['encryption_key'], url=url, password=password)
 
 
 @user.route("/delete")
@@ -37,3 +46,4 @@ def deletenote():
 @user.route("/get")
 def get_note():
     pass
+
