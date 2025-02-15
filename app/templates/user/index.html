@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать записку</title>
+</head>
+<body>
+    <h1>Создать записку</h1>
+    <form action="{{ url_for('user.createnote') }}" method="POST">
+        {{ form.hidden_tag() }}
+
+        <div>
+            <label for="text">Текст записки:</label>
+            {{ form.text() }}
+        </div>
+
+        <div>
+            <label for="TimeField">Время (чч:мм):</label>
+            {{ form.date() }}
+            <small>Пример: 14:30</small>
+        </div>
+
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+</body>
+</html>
