@@ -7,20 +7,20 @@
 </head>
 <body>
     <h1>Создать записку</h1>
-    <form action="{{ url_for('user.createnote') }}" method="POST">
+    <form action="{{ url_for('user.create') }}" method="POST">
         {{ form.hidden_tag() }}
-
         <div>
-            <label for="text">Текст записки:</label>
+            {{ form.text.label }}
             {{ form.text() }}
         </div>
-
         <div>
-            <label for="TimeField">Время (чч:мм):</label>
-            {{ form.date_remove() }}
-            <small>Пример: 14:30</small>
+            {{ form.password.label }}
+            {{ form.password }}
         </div>
-
+        <div>
+            {{ form.date_remove.label }} (не больше 10)
+            {{ form.date_remove() }}
+        </div>
         <div>
             {{ form.submit() }}
         </div>
